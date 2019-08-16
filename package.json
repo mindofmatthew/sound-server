@@ -4,6 +4,7 @@
   "description": "Node-wrapper around supercollider synthesis engine",
   "main": "index.js",
   "scripts": {
+    "start": "node server/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -17,7 +18,16 @@
   },
   "homepage": "https://github.com/mindofmatthew/sound-server#readme",
   "dependencies": {
+    "express": "^4.17.1",
+    "parcel-bundler": "^1.12.3",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "react-router-dom": "^5.0.1",
     "supercolliderjs": "^0.14.2",
     "ws": "^7.1.2"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "jsxBracketSameLine": true
   }
 }
