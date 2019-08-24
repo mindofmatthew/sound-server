@@ -7,7 +7,10 @@ import 'codemirror/lib/codemirror.css';
 export function SynthEditor() {
   const [code, updateCode] = useState('');
 
-  fetch('/_/fs/my.synth')
+  fetch('/_/fs/my_synth.scd', {
+    method: 'put',
+    body: 'hi there new file friend'
+  })
     .then(r => r.text())
     .then(v => {
       console.log(v);
