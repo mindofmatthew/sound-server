@@ -6,14 +6,24 @@ import { Synths } from './synths';
 
 function App() {
   let [wsSend, setSendCallback] = useState(null);
+  let [connectionStatus, setConnectionStatus] = useState('Starting');
 
   useEffect(() => {
     const socket = new WebSocket(`ws://${location.host}/_/synth/bcd`);
 
     socket.addEventListener('open', () => {
+      setConnectionStatus('Open');
       setSendCallback(() => m => {
         socket.send(m);
       });
+    });
+
+    socket.addEventListener('close', e => {
+      setConnectionStatus(`Closed: (${e.code}) ${e.reason}`);
+    });
+
+    socket.addEventListener('error', e => {
+      setConnectionStatus('Error');
     });
 
     return () => {
@@ -21,14 +31,19 @@ function App() {
     };
   }, []);
 
-  if (wsSend) {
-    wsSend('hi!');
-  }
-
   return (
-    <Router>
-      <Route path="/synths" component={Synths} />
-    </Router>
+    <>
+      <button
+        onClick={() => {
+          wsSend('hi');
+        }}>
+        say hi to the server
+      </button>
+      <div>Status: {connectionStatus}</div>
+      <Router>
+        <Route path="/synths" component={Synths} />
+      </Router>
+    </>
   );
 }
 

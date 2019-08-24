@@ -17,7 +17,7 @@ app.use(express.text());
 
 app.ws('/_/synth/:name', (ws, req) => {
   ws.on('message', m => {
-    ws.send(m);
+    console.log(`Received: ${m}`);
   });
 });
 
