@@ -5,19 +5,19 @@ import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import { Synths } from './synths';
 
 function App() {
-  let [wsSend, updateWSSend] = useState(null);
-
-  useEffect(() => {
-    const socket = new WebSocket('ws://localhost:8888');
-
-    socket.addEventListener('open', () => {
-      updateWSSend(() => socket.send);
-    });
-
-    return () => {
-      socket.close();
-    };
-  }, []);
+  // let [wsSend, updateWSSend] = useState(null);
+  //
+  // useEffect(() => {
+  //   const socket = new WebSocket('ws://localhost:8888');
+  //
+  //   socket.addEventListener('open', () => {
+  //     updateWSSend(() => socket.send);
+  //   });
+  //
+  //   return () => {
+  //     socket.close();
+  //   };
+  // }, []);
 
   return (
     <Router>
