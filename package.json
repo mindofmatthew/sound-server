@@ -28,6 +28,7 @@
   },
   "prettier": {
     "singleQuote": true,
-    "jsxBracketSameLine": true
+    "jsxBracketSameLine": true,
+    "trailingComma": "all"
   }
 }

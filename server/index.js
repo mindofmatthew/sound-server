@@ -1,9 +1,8 @@
+const Bundler = require('parcel-bundler');
 const express = require('express');
-
+const Path = require('path');
 const WebSocket = require('ws');
 
-const Bundler = require('parcel-bundler');
-const Path = require('path');
 const entryPoint = Path.join(__dirname, '../client/index.html');
 
 const app = express();
@@ -24,6 +23,21 @@ wss.on('connection', socket => {
 });
 
 const bundler = new Bundler(entryPoint, { hmrPort: 8080 });
+
+/* List available files */
+app.get('/_/fs', (req, res) => {
+  res.send([{ name: 'foo.bar' }]);
+});
+
+/* Get contents of a file */
+app.get('/_/fs/:fileName', (req, res) => {
+  res.send(`Contents of ${req.params.fileName}`);
+});
+
+/* Replace a file with the supplied body contents */
+app.put('/_/fs/:fileName', (req, res) => {
+  res.send(req.body);
+});
 
 app.use(bundler.middleware());
 app.listen(8000);
