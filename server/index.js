@@ -2,6 +2,8 @@ const Bundler = require('parcel-bundler');
 const express = require('express');
 const Path = require('path');
 const WebSocket = require('ws');
+const expressWs = require('express-ws');
+
 const fs = require('fs').promises;
 
 require('express-async-errors');
@@ -9,21 +11,13 @@ require('express-async-errors');
 const entryPoint = Path.join(__dirname, '../client/index.html');
 
 const app = express();
+expressWs(app);
 
 app.use(express.text());
 
-const wss = new WebSocket.Server({ port: 8888 });
-
-wss.on('connection', socket => {
-  console.log('--Connection Opened--');
-
-  socket.on('message', data => {
-    console.log('Message Received:');
-    console.log(data);
-  });
-
-  socket.on('close', () => {
-    console.log('--Connection Closed--');
+app.ws('/_/synth/:name', (ws, req) => {
+  ws.on('message', m => {
+    ws.send(m);
   });
 });
 
