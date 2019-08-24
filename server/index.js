@@ -2,10 +2,15 @@ const Bundler = require('parcel-bundler');
 const express = require('express');
 const Path = require('path');
 const WebSocket = require('ws');
+const fs = require('fs').promises;
+
+require('express-async-errors');
 
 const entryPoint = Path.join(__dirname, '../client/index.html');
 
 const app = express();
+
+app.use(express.text());
 
 const wss = new WebSocket.Server({ port: 8888 });
 
@@ -25,18 +30,21 @@ wss.on('connection', socket => {
 const bundler = new Bundler(entryPoint, { hmrPort: 8080 });
 
 /* List available files */
-app.get('/_/fs', (req, res) => {
-  res.send([{ name: 'foo.bar' }]);
+app.get('/_/fs', async (req, res) => {
+  const a = await fs.readdir('data/');
+  res.send(a.map(name => ({ name })));
 });
 
 /* Get contents of a file */
-app.get('/_/fs/:fileName', (req, res) => {
-  res.send(`Contents of ${req.params.fileName}`);
+app.get('/_/fs/:name', async (req, res) => {
+  res.send(await fs.readFile(`data/${req.params.name}`)).type('text');
 });
 
 /* Replace a file with the supplied body contents */
-app.put('/_/fs/:fileName', (req, res) => {
-  res.send(req.body);
+app.put('/_/fs/:name', async (req, res) => {
+  const contents = req.body;
+  await fs.writeFile(`data/${req.params.name}`, contents);
+  res.send(contents);
 });
 
 app.use(bundler.middleware());
