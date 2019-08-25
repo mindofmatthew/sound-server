@@ -31,14 +31,19 @@ app.get('/_/fs', async (req, res) => {
 
 /* Get contents of a file */
 app.get('/_/fs/:name', async (req, res) => {
-  res.send(await fs.readFile(`data/${req.params.name}`)).type('text');
+  res.type('text/plain').send(await fs.readFile(`data/${req.params.name}`));
 });
 
 /* Replace a file with the supplied body contents */
 app.put('/_/fs/:name', async (req, res) => {
   const contents = req.body;
   await fs.writeFile(`data/${req.params.name}`, contents);
-  res.send(contents);
+  res.type('text/plain').send(contents);
+});
+
+app.delete('/_/fs/:name', async (req, res) => {
+  await fs.unlink(`data/${req.params.name}`);
+  res.send();
 });
 
 app.use(bundler.middleware());
