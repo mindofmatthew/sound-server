@@ -29,6 +29,9 @@ wss.on('connection', socket => {
 
 const bundler = new Bundler(entryPoint, { hmrPort: 8080 });
 
+// Init Filesystem
+fs.mkdir('./data', { recursive: true });
+
 /* List available files */
 app.get('/_/fs', async (req, res) => {
   const a = await fs.readdir('data/');

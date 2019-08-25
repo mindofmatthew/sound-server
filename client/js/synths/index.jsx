@@ -8,7 +8,7 @@ export function Synths({ match }) {
   return (
     <>
       <Route exact path={match.path} component={SynthList} />
-      <Route path={`${match.path}/:synthName`} component={SynthEditor} />
+      <Route path={`${match.path}/:synth`} component={SynthEditor} />
     </>
   );
 }
