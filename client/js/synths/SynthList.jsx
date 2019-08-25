@@ -12,11 +12,17 @@ export function SynthList({ history }) {
       .then(v => updateSynths(v));
   }, [updateSynths]);
 
-  // useEffect(() => {
-  //   fetch('/_/fs/')
-  //     .then(r => r.json())
-  //     .then(v => updateSynths(v));
-  // }, [toDelete, updateToDelete]);
+  useEffect(() => {
+    if (toDelete !== null) {
+      fetch(`/_/fs/${toDelete}.scd`, { method: 'delete' }).then(() => {
+        updateSynths(synths => [
+          ...synths.slice(0, synths.indexOf(toDelete)),
+          ...synths.slice(synths.indexOf(toDelete) + 1),
+        ]);
+        updateToDelete(null);
+      });
+    }
+  }, [toDelete, updateToDelete]);
 
   return (
     <div>
@@ -25,7 +31,9 @@ export function SynthList({ history }) {
       <ul>
         {synths.map((synth, index) => {
           const name = synth.name.slice(0, -4);
-          return <SynthListing key={index} name={name} />;
+          return (
+            <SynthListing key={index} name={name} onDelete={updateToDelete} />
+          );
         })}
       </ul>
     </div>
