@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { render } from 'react-dom';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 
+import { WebSocketPort } from 'osc/dist/osc-browser';
+
 import { Synths } from './synths';
 
 function App() {
@@ -9,20 +11,23 @@ function App() {
   let [connectionStatus, setConnectionStatus] = useState('Starting');
 
   useEffect(() => {
-    const socket = new WebSocket(`ws://${location.host}/_/synth/bcd`);
+    const socket = new WebSocketPort({
+      url: `ws://${location.host}/_/scsynth`,
+    });
+    socket.open();
 
-    socket.addEventListener('open', () => {
+    socket.on('ready', () => {
       setConnectionStatus('Open');
       setSendCallback(() => m => {
         socket.send(m);
       });
     });
 
-    socket.addEventListener('close', e => {
+    socket.on('close', e => {
       setConnectionStatus(`Closed: (${e.code}) ${e.reason}`);
     });
 
-    socket.addEventListener('error', e => {
+    socket.on('error', e => {
       setConnectionStatus('Error');
     });
 
@@ -35,7 +40,7 @@ function App() {
     <>
       <button
         onClick={() => {
-          wsSend('hi');
+          wsSend({ address: '/s_new', args: ['formant', 1000, 0, 0] });
         }}>
         say hi to the server
       </button>
